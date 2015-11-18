@@ -104,11 +104,11 @@ def handle_events(frame_time):
 def draw(frame_time):
     clear_canvas()
     image.draw(600,300)
-    menu.draw()
     army.draw()
     map.draw()
     number_squad.draw()
     number_map.draw()
+    menu.draw()
     update_canvas()
 
 def update(frame_time):

@@ -2,6 +2,7 @@
 import game_framework
 import title_state
 import random
+import time
 
 from myenum import *
 from CBlock import *
@@ -42,6 +43,7 @@ animation = list()
 item = list()
 create_item = 0
 pos = list()
+play_time = 0
 
 class BackGround:
     Image = None
@@ -80,6 +82,7 @@ def makemap():
 def enter():
     global squad_num
     global font
+    global play_time
     font = load_font('kenvector_future.TTF')                         #폰트..
     makemap()
     global background
@@ -93,6 +96,7 @@ def enter():
     global coin
     for i in range(30):
         coin.append(Coin(random.randint(0,1200),random.randint(0,600),0,0))
+    play_time = time.clock()
 
 def exit():
     global font
@@ -160,7 +164,7 @@ def handle_events(frame_time):
 
 def move_screen(play_x,play_y,scroll_x,scroll_y,frame_time):
     global move_speed
-    print(move_speed)
+    #print(move_speed)
     if (play_x + scroll_x <= 300 or play_x + scroll_x >= 900) or (play_y + scroll_y <= 200 or play_y + scroll_y >= 400):
         move_speed += 500 * frame_time
     else:
@@ -189,6 +193,7 @@ def update(frame_time):
     item_type = 0
     global scroll_x
     global scroll_y
+    global play_time
 
     #print(play_x,"\t",play_y)
 
@@ -201,6 +206,40 @@ def update(frame_time):
     if bottom_move:
         scroll_y += (600 + move_speed) * frame_time
 
+    if len(bullet) <= 0 and int(time.clock() - play_time) >= 15:
+        play_time = time.clock()
+        if Player_turn == SoldierTeam.Green:
+            Player_turn = SoldierTeam.Gray
+            if len(team_green):
+                team_green[0].moveRight = False
+                team_green[0].moveLeft = False
+                team_green[0].state = SoldierState.Idle
+                team_green[0].STATE = SoldierHandle.IDLE
+                team_green[0].characterframe = SoldierFrame.Idle
+                team_green[0].frame = 0     
+                team_green[0].increAngel = False
+                team_green[0].decreAngel = False
+                team_green[0].charge = False
+                team_green[0].power = 0
+                team_green.insert(0,team_green.pop())
+                                    
+        elif Player_turn == SoldierTeam.Gray:
+            Player_turn = SoldierTeam.Green
+            if len(team_gray):
+                team_gray[0].moveRight = False
+                team_gray[0].moveLeft = False
+                team_gray[0].state = SoldierState.Idle
+                team_gray[0].STATE = SoldierHandle.IDLE
+                team_gray[0].characterframe = SoldierFrame.Idle
+                team_gray[0].frame = 0     
+                team_gray[0].increAngel = False
+                team_gray[0].decreAngel = False
+                team_gray[0].charge = False
+                team_gray[0].power = 0
+                team_gray.insert(0,team_gray.pop())
+
+    #print(int(time.clock() - play_time))
+
     turn = collision_bullet_and_obj(bullet,block,team_green,team_gray,item,animation)
     if turn:
         if len(bullet) <= 0 and Player_turn == SoldierTeam.Green:
@@ -208,11 +247,13 @@ def update(frame_time):
             if len(team_green):
                 team_green.insert(0,team_green.pop())
                 create_item += 1
+                play_time = time.clock()
         elif len(bullet) <= 0 and Player_turn == SoldierTeam.Gray:
             Player_turn = SoldierTeam.Green
             if len(team_gray):
                 team_gray.insert(0,team_gray.pop())
                 create_item += 1
+                play_time = time.clock()
 
         wind = random.randint(-10,10)
         while wind == 0:
@@ -252,9 +293,11 @@ def update(frame_time):
             bullet.clear()
             if Player_turn == SoldierTeam.Green:
                 Player_turn = SoldierTeam.Gray
+                play_time = time.clock()
                 team_green.insert(0,team_green.pop())
             else:
                 Player_turn = SoldierTeam.Green
+                play_time = time.clock()
                 team_gray.insert(0,team_gray.pop())
             wind = random.randint(-10,10)
     for i in item:
@@ -275,7 +318,7 @@ def update(frame_time):
         i.update(frame_time)
         if i.frame >= 25:
             animation.remove(i)
-    ui.update(frame_time,wind)
+    ui.update(frame_time,wind,int(time.clock() - play_time))
 
 def draw(frame_time):
     clear_canvas()
@@ -306,8 +349,14 @@ def draw(frame_time):
 
     if Player_turn == SoldierTeam.Green and len(team_green):
         ui.draw(int(team_green[0].get_power()),frame_time,team_green[0].x + scroll_x,team_green[0].y + scroll_y + 30)
-        font.draw(90, 505, '%d' % wind)
+        if wind < 0:
+            font.draw(55, 85, '%d' % wind)
+        else:
+            font.draw(65, 85, '%d' % wind)
     elif Player_turn == SoldierTeam.Gray and len(team_gray):
         ui.draw(int(team_gray[0].get_power()),frame_time,team_gray[0].x + scroll_x,team_gray[0].y + scroll_y + 30)
-        font.draw(90, 505, '%d' % wind)
+        if wind < 0:
+            font.draw(55, 85, '%d' % wind)
+        else:
+            font.draw(65, 85, '%d' % wind)
     update_canvas()

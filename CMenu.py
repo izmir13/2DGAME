@@ -6,6 +6,8 @@ class Menu:
     image_playgame = None
     image_howtoplay = None
     image_quit = None
+    image_htp = None
+    htp_draw = False
     
     def __init__(self):
         if Menu.image_playgame == None:
@@ -14,11 +16,13 @@ class Menu:
             Menu.image_howtoplay = load_image('image//howtoplay.png')
         if Menu.image_quit == None:
             Menu.image_quit = load_image('image//quit.png')
+        if Menu.image_htp == None:
+            Menu.image_htp = load_image('image//htp.png')
         
         self.image_x = 600
-        self.image_play_y = 284
-        self.image_htp_y = 242
-        self.image_quit_y = 200
+        self.image_play_y = 300
+        self.image_htp_y = 240
+        self.image_quit_y = 180
         self.select_menu = [1,0,0]
         self.menucount = 0
     def update(self,select):
@@ -36,9 +40,12 @@ class Menu:
             self.select_menu[2] = 0
 
     def draw(self):
-        self.image_playgame.clip_draw(245* self.select_menu[0],0,245,42, self.image_x,self.image_play_y,300,50);
-        self.image_howtoplay.clip_draw(245* self.select_menu[1],0,245,42,self.image_x,self.image_htp_y,300,50);
-        self.image_quit.clip_draw(245* self.select_menu[2],0,245,42,self.image_x,self.image_quit_y,300,50);
+        self.image_playgame.clip_draw(490* self.select_menu[0],0,490,84, self.image_x,self.image_play_y);
+        self.image_howtoplay.clip_draw(490* self.select_menu[1],0,490,84,self.image_x,self.image_htp_y);
+        #self.image_howtoplay.clip_draw(1020* self.select_menu[1],0,1020,175,self.image_x,self.image_htp_y);
+        self.image_quit.clip_draw(490* self.select_menu[2],0,490,84,self.image_x,self.image_quit_y);
+        if Menu.htp_draw:
+            self.image_htp.draw(600,300)
 
     def event(self,event):
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_DOWN):
@@ -48,7 +55,10 @@ class Menu:
         if((self.menucount == 0) and ((event.type, event.key) == (SDL_KEYDOWN, SDLK_RETURN))):
             game_framework.change_state(game_state)
         if((self.menucount == 1) and ((event.type, event.key) == (SDL_KEYDOWN, SDLK_RETURN))):
-            game_framework.change_state(game_state)
+            if Menu.htp_draw == False:
+                Menu.htp_draw = True
+            elif Menu.htp_draw == True:
+                Menu.htp_draw = False
         if((self.menucount == 2) and ((event.type, event.key) == (SDL_KEYDOWN, SDLK_RETURN))):
             game_framework.quit()
 
