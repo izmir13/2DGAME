@@ -133,6 +133,7 @@ def handle_events(frame_time):
     global right_move
     global top_move
     global bottom_move
+    
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
@@ -194,7 +195,8 @@ def update(frame_time):
     global scroll_x
     global scroll_y
     global play_time
-
+    total_hp_green = 0
+    total_hp_gray = 0
     #print(play_x,"\t",play_y)
 
     if left_move:
@@ -303,12 +305,14 @@ def update(frame_time):
     for i in item:
         i.update(frame_time)
     for i in team_green:
+        total_hp_green += i.get_hp()
         item_type = collision_soldier_and_item(i,item)
         i.update(frame_time,item_type)
         if i.y < -100:
             Player_turn = SoldierTeam.Gray
             team_green.remove(i)
     for i in team_gray:
+        total_hp_gray += i.get_hp()
         item_type = collision_soldier_and_item(i,item)
         i.update(frame_time,item_type)
         if i.y < -100:
@@ -318,11 +322,16 @@ def update(frame_time):
         i.update(frame_time)
         if i.frame >= 25:
             animation.remove(i)
-    ui.update(frame_time,wind,int(time.clock() - play_time))
+    ui.update(frame_time,wind,int(time.clock() - play_time),total_hp_green,total_hp_gray,squad_num)
+    
 
 def draw(frame_time):
     clear_canvas()
     background.draw()
+    power = 0
+    p_x = 0
+    p_y = 0
+
     for i in coin:
         i.draw(scroll_x,scroll_y)
     for i in block:
@@ -347,16 +356,33 @@ def draw(frame_time):
     for i in animation:
         i.draw(scroll_x,scroll_y)
 
+
+
     if Player_turn == SoldierTeam.Green and len(team_green):
-        ui.draw(int(team_green[0].get_power()),frame_time,team_green[0].x + scroll_x,team_green[0].y + scroll_y + 30)
-        if wind < 0:
-            font.draw(55, 85, '%d' % wind)
-        else:
-            font.draw(65, 85, '%d' % wind)
+        power = team_green[0].get_power()
+        p_x = team_green[0].x
+        p_y = team_green[0].y
+        
     elif Player_turn == SoldierTeam.Gray and len(team_gray):
-        ui.draw(int(team_gray[0].get_power()),frame_time,team_gray[0].x + scroll_x,team_gray[0].y + scroll_y + 30)
-        if wind < 0:
-            font.draw(55, 85, '%d' % wind)
-        else:
-            font.draw(65, 85, '%d' % wind)
+        power = team_gray[0].get_power()
+        p_x = team_gray[0].x
+        p_y = team_gray[0].y
+    ui.draw(int(power),frame_time,p_x + scroll_x,p_y + scroll_y + 30)
+    if wind < 0:
+        font.draw(55, 85, '%d' % wind)
+    else:
+        font.draw(65, 85, '%d' % wind)
+
+    #if Player_turn == SoldierTeam.Green and len(team_green):
+    #    ui.draw(int(team_green[0].get_power()),frame_time,team_green[0].x + scroll_x,team_green[0].y + scroll_y + 30)
+    #    if wind < 0:
+    #        font.draw(55, 85, '%d' % wind)
+    #    else:
+    #        font.draw(65, 85, '%d' % wind)
+    #elif Player_turn == SoldierTeam.Gray and len(team_gray):
+    #    ui.draw(int(team_gray[0].get_power()),frame_time,team_gray[0].x + scroll_x,team_gray[0].y + scroll_y + 30)
+    #    if wind < 0:
+    #        font.draw(55, 85, '%d' % wind)
+    #    else:
+    #        font.draw(65, 85, '%d' % wind)
     update_canvas()

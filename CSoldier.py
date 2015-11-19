@@ -36,7 +36,7 @@ class Soldier:
         if Soldier.aim_image == None:
             Soldier.aim_image = load_image('image//aim.png')
         if Soldier.hp_image == None:
-            Soldier.hp_image = load_image('image//hpbar1.png')
+            Soldier.hp_image = load_image('image//hpbar.png')
         self.dir = random.randint(Direction.Left,Direction.Right)
         self.state = SoldierState.Idle
         self.STATE = self.SOLDIER_IDLE
