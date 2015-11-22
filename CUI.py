@@ -57,7 +57,7 @@ class CUI:
             self.wind_right = 1
         else:
             self.wind_right = 0
-        print(total_hp_green,'\t',total_hp_gray)
+        #print(total_hp_green,'\t',total_hp_gray)
         #print(play_time)
         if play_time <= 15 and total_hp_green > 0 and total_hp_gray > 0:
             self.time01 = (15 - play_time) % 10

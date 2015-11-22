@@ -3,6 +3,9 @@ from CBlock import *
 from CAnimation import *
 from math import *
 
+collision_sound = None
+item_sound =None
+
 def get_distance(p1,p2):
     width = p1.x - p2.x
     height = p1.y - p2.y
@@ -22,10 +25,10 @@ def collide(a, b):
 
     return True
 
-def collision_bullet_and_obj(bullet,block,green,gray,item,animation):
+def collision_bullet_and_obj(bullet,block,green,gray,item,animation,dead):
     collision_obj = False
     #collision_bullet = False
-
+    
     for i in bullet:
         for j in block:
             if collide(i,j):
@@ -40,6 +43,11 @@ def collision_bullet_and_obj(bullet,block,green,gray,item,animation):
                 collision_obj = True
                 break
     if collision_obj == True:
+        global collision_sound
+        if collision_sound == None:
+            collision_sound = load_wav('sound//sound_rocket_explosion_1.ogg')
+            collision_sound.set_volume(128)
+        collision_sound.play()
         for i in bullet:
             distance = 0
             for j in block:
@@ -72,10 +80,12 @@ def collision_bullet_and_obj(bullet,block,green,gray,item,animation):
             block.remove(j)
     for k in green:
         if k.get_hp() <= 0:
+            dead.play()
             green.remove(k)
             animation.append(Dead_Green(k.x,k.y));
     for l in gray:
         if l.get_hp() <= 0:
+            dead.play()
             gray.remove(l)
             animation.append(Dead_Gray(l.x,l.y));
     for m in item:
@@ -84,9 +94,14 @@ def collision_bullet_and_obj(bullet,block,green,gray,item,animation):
     return False
 
 def collision_soldier_and_item(soldier,item):
+    global item_sound
+    if item_sound == None:
+        item_sound = load_wav('sound//item.wav')
+        item_sound.set_volume(64)
     type = 0
     for i in item:
         if collide(soldier,i):
+            item_sound.play()
             #print(i.type)
             type = i.type
             item.remove(i)

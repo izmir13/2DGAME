@@ -13,6 +13,10 @@ class Soldier:
     grayteam_left_image = None
     hp_image = None
     aim_image = None 
+    shoot_sound = None
+    jump_sound = None
+    angle_sound = None
+    power_sound = None
     SOLDIER_MOVE = SoldierHandle.MOVE
     SOLDIER_AIM = SoldierHandle.AIM
     SOLDIER_IDLE = SoldierHandle.IDLE
@@ -37,6 +41,19 @@ class Soldier:
             Soldier.aim_image = load_image('image//aim.png')
         if Soldier.hp_image == None:
             Soldier.hp_image = load_image('image//hpbar.png')
+        if Soldier.shoot_sound == None:
+            Soldier.shoot_sound = load_wav('sound//sound_rocket_launch_2.ogg')
+            Soldier.shoot_sound.set_volume(128)
+        if Soldier.jump_sound == None:
+            Soldier.jump_sound = load_wav('sound//JUMP.wav')
+            Soldier.jump_sound.set_volume(32)
+        if Soldier.angle_sound == None:
+            Soldier.angle_sound = load_wav('sound//angle.ogg')
+            Soldier.angle_sound.set_volume(32)
+        if Soldier.power_sound == None:
+            Soldier.power_sound = load_wav('sound//power.wav')
+            Soldier.power_sound.set_volume(32)
+
         self.dir = random.randint(Direction.Left,Direction.Right)
         self.state = SoldierState.Idle
         self.STATE = self.SOLDIER_IDLE
@@ -125,8 +142,10 @@ class Soldier:
 
         if self.increAngel:
             self.angle += 100 * frame_time
+            Soldier.angle_sound.play()
         if self.decreAngel:
             self.angle -= 100 * frame_time
+            Soldier.angle_sound.play()
         if self.charge:
             self.power += 50 * frame_time
             if self.power >= 125:
@@ -214,8 +233,10 @@ class Soldier:
                 self.characterframe = SoldierFrame.Jump
                 self.state = SoldierState.Jump
                 self.STATE = self.SOLDIER_MOVE
+                Soldier.jump_sound.play()
             if event.key == SDLK_SPACE and self.state == SoldierState.Aim:
                 self.charge = True
+                Soldier.power_sound.play()
 
         if event.type == SDL_KEYUP:     #키를 땠을때
             if event.key == SDLK_RIGHT:                             #   →
@@ -248,6 +269,7 @@ class Soldier:
                     bullet.append(Bullet(self.x + sin(pi * self.angle / 180)*30 ,self.y + cos(pi * self.angle / 180)*30, self.power,self.angle-5,wind))
                     bullet.append(Bullet(self.x + sin(pi * self.angle / 180)*30 ,self.y + cos(pi * self.angle / 180)*30, self.power,self.angle,wind))
                     bullet.append(Bullet(self.x + sin(pi * self.angle / 180)*30 ,self.y + cos(pi * self.angle / 180)*30, self.power,self.angle+5,wind))
+                Soldier.shoot_sound.play()
                 self.power = 0
                 self.characterframe = SoldierFrame.Idle
                 self.state = SoldierState.Idle

@@ -1,6 +1,7 @@
 ﻿from pico2d import *
 import game_framework
 import title_state
+import end_state
 import random
 import time
 
@@ -41,9 +42,13 @@ bullet = list()
 coin = list()
 animation = list()
 item = list()
-create_item = 0
+create_item = 3
 pos = list()
 play_time = 0
+end_game = False
+winner = 0
+dead_sound = None
+
 
 class BackGround:
     Image = None
@@ -52,6 +57,40 @@ class BackGround:
         self.y = 300
         if BackGround.Image == None:
             BackGround.Image = load_image('image//Backgroung.png')
+        bgm_select = random.randint(0,2)
+        print(bgm_select)
+        self.bgm_0 = load_music('sound//bgm0.ogg')
+        self.bgm_0.set_volume(64)
+        self.bgm_1 = load_music('sound//bgm1.ogg')
+        self.bgm_1.set_volume(64)
+        self.bgm_2 = load_music('sound//bgm2.ogg')
+        self.bgm_2.set_volume(64)
+        self.music_play_time = 0
+        if bgm_select == 0:
+            self.bgm_0.play()
+            self.music_play_time = 226
+        elif bgm_select == 1:
+            self.bgm_1.play()
+            self.music_play_time = 236
+        elif bgm_select == 2:
+            self.bgm_2.play()
+            self.music_play_time = 290
+        self.play_time = time.clock()
+
+    def update(self):
+        if (time.clock() - self.play_time) >= self.music_play_time:
+            self.play_time = time.clock()
+            bgm_select = random.randint(0,2)
+            if bgm_select == 0:
+                self.bgm_0.play()
+                self.music_play_time = 227
+            elif bgm_select == 1:
+                self.bgm_1.play()
+                self.music_play_time = 237
+            elif bgm_select == 2:
+                self.bgm_2.play()
+                self.music_play_time = 291
+
     def draw(self):
         self.Image.draw(self.x,self.y)
 
@@ -97,28 +136,37 @@ def enter():
     for i in range(30):
         coin.append(Coin(random.randint(0,1200),random.randint(0,600),0,0))
     play_time = time.clock()
+    global end_time
+    play_time = time.clock()
+    global dead_sound
+    if dead_sound == None:
+        dead_sound = load_wav('sound//dead.wav')
+    dead_sound.set_volume(64)
 
 def exit():
     global font
     del(font)
     global block
-    del(block)
+    block.clear()
     global background
     del(background)
     global ui
     del(ui)
     global team_green
-    del(team_green)
+    team_green.clear()
     global team_gray
-    del(team_gray)
+    team_gray.clear()
     global bullet
-    del(bullet)
+    bullet.clear()
     global coin
-    del(coin)
+    coin.clear()
     global animation
-    del(animation)
+    animation.clear()
     global item
-    del(item)
+    item.clear()
+    global pos
+    pos.clear()
+    end_state.winner = winner
 
 def pause():
     pass
@@ -183,6 +231,8 @@ def move_screen(play_x,play_y,scroll_x,scroll_y,frame_time):
     return scroll_x, scroll_y
 
 def update(frame_time):
+    global winner
+    global end_game
     global play_x
     global play_y
     global create_item
@@ -198,6 +248,7 @@ def update(frame_time):
     total_hp_green = 0
     total_hp_gray = 0
     #print(play_x,"\t",play_y)
+    background.update()
 
     if left_move:
         scroll_x += (600 + move_speed) * frame_time
@@ -242,7 +293,7 @@ def update(frame_time):
 
     #print(int(time.clock() - play_time))
 
-    turn = collision_bullet_and_obj(bullet,block,team_green,team_gray,item,animation)
+    turn = collision_bullet_and_obj(bullet,block,team_green,team_gray,item,animation,dead_sound)
     if turn:
         if len(bullet) <= 0 and Player_turn == SoldierTeam.Green:
             Player_turn = SoldierTeam.Gray
@@ -309,6 +360,8 @@ def update(frame_time):
         item_type = collision_soldier_and_item(i,item)
         i.update(frame_time,item_type)
         if i.y < -100:
+            dead_sound.play()
+            play_time = time.clock()
             Player_turn = SoldierTeam.Gray
             team_green.remove(i)
     for i in team_gray:
@@ -316,6 +369,8 @@ def update(frame_time):
         item_type = collision_soldier_and_item(i,item)
         i.update(frame_time,item_type)
         if i.y < -100:
+            dead_sound.play()
+            play_time = time.clock()
             Player_turn = SoldierTeam.Green
             team_gray.remove(i)
     for i in animation:
@@ -323,6 +378,19 @@ def update(frame_time):
         if i.frame >= 25:
             animation.remove(i)
     ui.update(frame_time,wind,int(time.clock() - play_time),total_hp_green,total_hp_gray,squad_num)
+
+    if len(team_green) <= 0 or len(team_gray) <= 0 and end_game == False:
+        end_game = True
+        if len(team_gray) > 0:
+            winner = SoldierTeam.Gray
+        else:
+            winner = SoldierTeam.Green
+    if end_game:
+        if int(time.clock() - play_time) >= 2:
+            game_framework.change_state(end_state)
+            end_game = False
+            create_item = 0
+            play_time = 0
     
 
 def draw(frame_time):

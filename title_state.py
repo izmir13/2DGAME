@@ -17,6 +17,9 @@ squad_select = False
 map_select = False
 map_num = None
 
+title_bgm = None
+move_bgm = None
+
 def enter():
     global squad_num
     squad_num = 3
@@ -34,6 +37,16 @@ def enter():
     number_squad = Number(400,250)
     global number_map
     number_map = Number(800,250)
+    global title_bgm
+    title_bgm = load_music('sound//Unity.mp3')
+    title_bgm.set_volume(64)
+    title_bgm.repeat_play()
+    global move_bgm
+    move_bgm = load_wav('sound//move.wav')
+    move_bgm.set_volume(12)
+
+    #print(title_bgm,'\t',move_bgm)
+    #print(title_bgm.get_volume(),'\t',move_bgm.get_volume())
 
 def exit():
     game_state.squad_num = squad_num
@@ -50,6 +63,7 @@ def exit():
     del(number_squad)
     global number_map
     del(number_map)
+    title_bgm.stop()
 
 
 def handle_events(frame_time):
@@ -63,6 +77,8 @@ def handle_events(frame_time):
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
+        if event.type == SDL_KEYDOWN:
+            move_bgm.play()
         if event.type == SDL_KEYDOWN and event.key == SDLK_LEFT:
             select = (select -1) % 3
             menu_select = False
