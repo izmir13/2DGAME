@@ -42,7 +42,7 @@ bullet = list()
 coin = list()
 animation = list()
 item = list()
-create_item = 3
+create_item = 0
 pos = list()
 play_time = 0
 end_game = False
@@ -313,9 +313,9 @@ def update(frame_time):
             wind = random.randint(-10,10)
 
         if create_item % 5 == 0:
-            item.append(Weapon(random.randint(0,1200),600))
+            item.append(Weapon(random.randint(0,2400),1200))             # 여기바꾸기..
         if create_item % 7 == 0:
-            item.append(Potion(random.randint(0,1200),600))
+            item.append(Potion(random.randint(0,2400),1200))
 
     if len(team_green) > 0 and len(team_gray) > 0:
         if len(bullet) <= 0 and Player_turn == SoldierTeam.Green:
@@ -342,7 +342,7 @@ def update(frame_time):
         i.update(frame_time,wind,scroll_x,scroll_y)
     for i in bullet:
         i.update(frame_time)
-        if i.y < -100:
+        if i.y < -500:
             bullet.clear()
             if Player_turn == SoldierTeam.Green:
                 Player_turn = SoldierTeam.Gray
@@ -359,7 +359,7 @@ def update(frame_time):
         total_hp_green += i.get_hp()
         item_type = collision_soldier_and_item(i,item)
         i.update(frame_time,item_type)
-        if i.y < -100:
+        if i.y < -300:
             dead_sound.play()
             play_time = time.clock()
             Player_turn = SoldierTeam.Gray
@@ -368,7 +368,7 @@ def update(frame_time):
         total_hp_gray += i.get_hp()
         item_type = collision_soldier_and_item(i,item)
         i.update(frame_time,item_type)
-        if i.y < -100:
+        if i.y < -300:
             dead_sound.play()
             play_time = time.clock()
             Player_turn = SoldierTeam.Green

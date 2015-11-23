@@ -27,11 +27,13 @@ def collide(a, b):
 
 def collision_bullet_and_obj(bullet,block,green,gray,item,animation,dead):
     collision_obj = False
+    coll = False
     #collision_bullet = False
-    
+    bullet_num = 0
     for i in bullet:
         for j in block:
             if collide(i,j):
+                bullet_num = i
                 collision_obj = True
                 break
         for k in green:
@@ -49,31 +51,37 @@ def collision_bullet_and_obj(bullet,block,green,gray,item,animation,dead):
             collision_sound.set_volume(128)
         collision_sound.play()
         for i in bullet:
+            coll = False
             distance = 0
             for j in block:
                 distance = get_distance(i,j)
                 if distance < i.getrange():
+                    coll = True
                     j.set_strength(calculate_damage(i.damage,distance,i.explosice_range))
                     #if j.get_strength() <= 0:
                     #    block.remove(j)
             for k in green:
                 distance = get_distance(i,k)
                 if distance < i.getrange():
+                    coll = True
                     k.set_hp(calculate_damage(i.damage,distance,i.explosice_range))
                     #if k.get_hp() <= 0:
                     #    green.remove(k)
             for l in gray:
                 distance = get_distance(i,l)
                 if distance < i.getrange():
+                    coll = True
                     l.set_hp(calculate_damage(i.damage,distance,i.explosice_range))
                     #if l.get_hp() <= 0:
                     #    gray.remove(l)
             for m in item:
                 distance = get_distance(i,m)
                 if distance < i.getrange():
+                    coll = True
                     m.set_hp(calculate_damage(i.damage,distance,i.explosice_range))
-            animation.append(Explosion(i.x,i.y));
-            bullet.remove(i)   
+            if coll == True:
+                animation.append(Explosion(i.x,i.y));
+                bullet.remove(i)   
         return True
     for j in block:
         if j.get_strength() <= 0:
