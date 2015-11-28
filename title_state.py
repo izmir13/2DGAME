@@ -39,7 +39,7 @@ def enter():
     number_map = Number(800,250)
     global title_bgm
     title_bgm = load_music('sound//Unity.mp3')
-    title_bgm.set_volume(64)
+    title_bgm.set_volume(32)
     title_bgm.repeat_play()
     global move_bgm
     move_bgm = load_wav('sound//move.wav')

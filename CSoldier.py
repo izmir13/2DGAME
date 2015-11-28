@@ -71,7 +71,7 @@ class Soldier:
 
         self.jump = False
 
-        self.fall = True
+        self.fall = False
         self.falltime = 0
 
         self.left = self.x-15
@@ -230,6 +230,7 @@ class Soldier:
             if (event.key == SDLK_LCTRL):       
                 self.jump = True                      
                 self.frame = 0
+                #self.falltime = 0
                 self.characterframe = SoldierFrame.Jump
                 self.state = SoldierState.Jump
                 self.STATE = self.SOLDIER_MOVE

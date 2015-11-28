@@ -61,6 +61,7 @@ def collision_bullet_and_obj(bullet,block,green,gray,item,animation,dead):
                     #if j.get_strength() <= 0:
                     #    block.remove(j)
             for k in green:
+                k.fall = True
                 distance = get_distance(i,k)
                 if distance < i.getrange():
                     coll = True
@@ -68,6 +69,7 @@ def collision_bullet_and_obj(bullet,block,green,gray,item,animation,dead):
                     #if k.get_hp() <= 0:
                     #    green.remove(k)
             for l in gray:
+                l.fall = True
                 distance = get_distance(i,l)
                 if distance < i.getrange():
                     coll = True
@@ -133,7 +135,7 @@ def collision_soldier_and_block(soldier,block):
                 if soldier.jump:
                     soldier.state = SoldierState.Move
                     soldier.STATE = SoldierHandle.MOVE
-                fall = False
+                soldier.fall = False
                 soldier.jump = False
                 soldier.falltime = 0
             if(soldier.top > block.bottom) and (soldier.top < block.bottom + 22):
