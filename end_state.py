@@ -29,7 +29,7 @@ def enter():
     end_bgm.play()
     print(end_bgm.get_volume())
 
-def exit():
+def exit():#
     global image
     del(image)
     global player_image
