@@ -60,11 +60,11 @@ class BackGround:
         bgm_select = random.randint(0,2)
         print(bgm_select)
         self.bgm_0 = load_music('sound//bgm0.ogg')
-        self.bgm_0.set_volume(32)
+        self.bgm_0.set_volume(64)
         self.bgm_1 = load_music('sound//bgm1.ogg')
-        self.bgm_1.set_volume(32)
+        self.bgm_1.set_volume(64)
         self.bgm_2 = load_music('sound//bgm2.ogg')
-        self.bgm_2.set_volume(32)
+        self.bgm_2.set_volume(64)
         self.music_play_time = 0
         if bgm_select == 0:
             self.bgm_0.play()

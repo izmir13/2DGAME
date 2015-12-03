@@ -39,11 +39,11 @@ def enter():
     number_map = Number(800,250)
     global title_bgm
     title_bgm = load_music('sound//Unity.mp3')
-    title_bgm.set_volume(32)
+    title_bgm.set_volume(64)
     title_bgm.repeat_play()
     global move_bgm
     move_bgm = load_wav('sound//move.wav')
-    move_bgm.set_volume(12)
+    move_bgm.set_volume(24)
 
     #print(title_bgm,'\t',move_bgm)
     #print(title_bgm.get_volume(),'\t',move_bgm.get_volume())
@@ -63,8 +63,11 @@ def exit():
     del(number_squad)
     global number_map
     del(number_map)
-    title_bgm.stop()
-
+    #title_bgm.stop()
+    global title_bgm
+    del(title_bgm)
+    global move_bgm
+    del(move_bgm)
 
 def handle_events(frame_time):
     global select

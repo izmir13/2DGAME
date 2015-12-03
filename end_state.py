@@ -25,7 +25,7 @@ def enter():
     end_bgm = load_music('sound//end.ogg')
     move_bgm = load_wav('sound//move.wav')
     end_bgm.set_volume(64)
-    move_bgm.set_volume(12)
+    move_bgm.set_volume(24)
     end_bgm.play()
     print(end_bgm.get_volume())
 
@@ -38,7 +38,10 @@ def exit():#
     del(exit_image)
     global retry_image
     del(retry_image)
-    end_bgm.stop()
+    global end_bgm
+    del(end_bgm)
+    global move_bgm
+    del(move_bgm)
 
 def handle_events(frame_time):
     global select

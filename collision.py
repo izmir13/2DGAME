@@ -11,7 +11,7 @@ def get_distance(p1,p2):
     height = p1.y - p2.y
     distance = sqrt(width*width + height*height)
     return distance
-def calculate_damage(damage,distance,explosice_range):
+def calculate_damage(damage,distance,explosice_range): 
     return damage - damage * (distance / explosice_range)
 
 def collide(a, b):
