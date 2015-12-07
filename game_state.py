@@ -107,6 +107,8 @@ def makemap():
         f = open('map1.txt','r')
     if map_num == 2:
         f = open('map2.txt','r')
+    if map_num == 3:
+        f = open('map3.txt','r')
     s = f.read()
     l = s.split()
     count = 0

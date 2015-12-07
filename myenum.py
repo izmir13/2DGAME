@@ -36,12 +36,21 @@ class ItemType():
     Potion = 1
     double_shot = 2
     triple_shot = 3
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  

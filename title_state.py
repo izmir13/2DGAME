@@ -109,8 +109,8 @@ def handle_events(frame_time):
             if event.type == SDL_KEYDOWN and event.key == SDLK_DOWN:
                 map_num = map_num -1
             if map_num < 1:
-                map_num = 2
-            if map_num > 2:
+                map_num = 3
+            if map_num > 3:
                 map_num = 1
 
         if select == 1:
